@@ -1,0 +1,69 @@
+package bg.sofia.uni.project.movie.common;
+
+import bg.sofia.uni.project.movie.server.logger.LoggerUtil;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+
+import java.util.logging.Level;
+
+public class MovieJsonParser {
+
+    private static final Gson gson = new Gson();
+    private static final String ERROR_FIELD = "error";
+    private static final String NA_VALUE = "N/A";
+
+    public static Movie parseMovie(String json) {
+        if (json == null || json.isBlank()) {
+            return errorMovie("Empty response received from server.");
+        }
+
+        try {
+            JsonObject obj = JsonParser.parseString(json).getAsJsonObject();
+
+            if (obj.has(ERROR_FIELD)) {
+                return errorMovie(obj.get(ERROR_FIELD).getAsString());
+            }
+
+            Movie movie = gson.fromJson(json, Movie.class);
+
+            if (movie == null || movie.title() == null) {
+                return errorMovie("Invalid movie data received.");
+            }
+
+            return movie;
+
+        } catch (JsonSyntaxException e) {
+            LoggerUtil.log(Level.SEVERE, "Failed to parse JSON: " + json, e);
+            return errorMovie("Failed to parse server response.");
+        } catch (Exception e) {
+            LoggerUtil.log(Level.SEVERE, "Unexpected error parsing movie data", e);
+            return errorMovie("Unexpected error parsing movie data.");
+        }
+    }
+
+    public static Movie[] parseMovies(String json) {
+        if (json == null || json.isBlank()) {
+            return new Movie[]{errorMovie("Empty recommendations received.")};
+        }
+
+        try {
+            return gson.fromJson(json, Movie[].class);
+        } catch (JsonSyntaxException e) {
+            LoggerUtil.log(Level.SEVERE, "Failed to parse movies array", e);
+            return new Movie[]{errorMovie("Failed to parse recommendations.")};
+        }
+    }
+
+    private static Movie errorMovie(String message) {
+        return new Movie(
+                message,
+                NA_VALUE,
+                NA_VALUE,
+                NA_VALUE,
+                NA_VALUE,
+                NA_VALUE
+        );
+    }
+}
