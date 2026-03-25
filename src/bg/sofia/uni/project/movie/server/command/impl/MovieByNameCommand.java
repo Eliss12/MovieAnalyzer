@@ -12,19 +12,16 @@ public class MovieByNameCommand extends Command {
     }
 
     @Override
-    public String execute(MovieService movieService) throws MovieAppException {
+    public String execute(MovieService movieService) throws Exception {
         if (argument.isEmpty()) {
             return errorJson("Movie title cannot be empty");
         }
 
-        try {
-            Movie movie = movieService.getMovieByName(argument);
-            if (movie == null) {
-                return errorJson("Movie not found: " + argument);
-            }
-            return toJson(movie);
-        } catch (Exception e) {
-            throw new MovieAppException("Failed to get movie: " + argument, e);
+        Movie movie = movieService.getMovieByName(argument);
+        if (movie == null) {
+            return errorJson("Movie not found: " + argument);
         }
+        return toJson(movie);
+
     }
 }

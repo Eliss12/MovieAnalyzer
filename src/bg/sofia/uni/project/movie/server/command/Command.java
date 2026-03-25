@@ -12,7 +12,7 @@ public abstract class Command {
         this.argument = argument != null ? argument.trim() : "";
     }
 
-    public abstract String execute(MovieService movieService) throws MovieAppException;
+    public abstract String execute(MovieService movieService) throws Exception;
 
     protected String toJson(Object obj) {
         return gson.toJson(obj);

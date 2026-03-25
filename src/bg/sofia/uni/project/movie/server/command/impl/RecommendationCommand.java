@@ -14,19 +14,17 @@ public class RecommendationCommand extends Command {
     }
 
     @Override
-    public String execute(MovieService movieService) throws MovieAppException {
+    public String execute(MovieService movieService) throws Exception {
         if (argument.isEmpty()) {
             return errorJson("Movie title for recommendations cannot be empty");
         }
 
-        try {
-            List<Movie> recommendations = movieService.recommend(argument);
-            if (recommendations.isEmpty()) {
-                return errorJson("No recommendations found for: " + argument);
-            }
-            return toJson(recommendations);
-        } catch (Exception e) {
-            throw new MovieAppException("Failed to get recommendations for: " + argument, e);
+
+        List<Movie> recommendations = movieService.recommend(argument);
+        if (recommendations.isEmpty()) {
+            return errorJson("No recommendations found for: " + argument);
         }
+        return toJson(recommendations);
+
     }
 }

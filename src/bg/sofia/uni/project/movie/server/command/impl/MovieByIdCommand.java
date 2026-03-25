@@ -12,19 +12,16 @@ public class MovieByIdCommand extends Command {
     }
 
     @Override
-    public String execute(MovieService movieService) throws MovieAppException {
+    public String execute(MovieService movieService) throws Exception {
         if (argument.isEmpty()) {
             return errorJson("Movie ID cannot be empty");
         }
 
-        try {
-            Movie movie = movieService.getMovieById(argument);
-            if (movie == null) {
-                return errorJson("Movie not found with ID: " + argument);
-            }
-            return toJson(movie);
-        } catch (Exception e) {
-            throw new MovieAppException("Failed to get movie by ID: " + argument, e);
+        Movie movie = movieService.getMovieById(argument);
+        if (movie == null) {
+            return errorJson("Movie not found with ID: " + argument);
         }
+        return toJson(movie);
+
     }
 }
