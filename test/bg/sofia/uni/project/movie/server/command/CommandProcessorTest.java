@@ -1,11 +1,12 @@
 package bg.sofia.uni.project.movie.server.command;
 
-import bg.sofia.uni.project.movie.common.Movie;
+import bg.sofia.uni.project.movie.common.ClientMovie;
+import bg.sofia.uni.project.movie.server.integration.Movie;
 import bg.sofia.uni.project.movie.exceptions.ApiException;
 import bg.sofia.uni.project.movie.exceptions.CacheException;
 import bg.sofia.uni.project.movie.exceptions.MovieAppException;
 import bg.sofia.uni.project.movie.exceptions.MovieNotFoundException;
-import bg.sofia.uni.project.movie.server.command.service.MovieService;
+import bg.sofia.uni.project.movie.server.service.MovieService;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,8 +40,10 @@ class CommandProcessorTest {
         when(movieService.getMovieByName("Inception")).thenReturn(movie);
 
         String response = processor.process("get-movie Inception");
-
-        assertEquals(gson.toJson(movie), response);
+        ClientMovie expected = new ClientMovie(
+                "Inception", "2010", "Nolan", "8.8", "Action", "http://poster"
+        );
+        assertEquals(gson.toJson(expected), response);
     }
 
     @Test
@@ -56,8 +58,10 @@ class CommandProcessorTest {
         when(movieService.getMovieById("tt1375666")).thenReturn(movie);
 
         String response = processor.process("get-movie-id tt1375666");
-
-        assertEquals(gson.toJson(movie), response);
+        ClientMovie expected = new ClientMovie(
+                "Inception", "2010", "Nolan", "8.8", "Action", "http://poster"
+        );
+        assertEquals(gson.toJson(expected), response);
     }
 
     @Test
@@ -66,8 +70,10 @@ class CommandProcessorTest {
         when(movieService.recommend("Inception")).thenReturn(recs);
 
         String response = processor.process("recommend Inception");
-
-        assertEquals(gson.toJson(recs), response);
+        List<ClientMovie> expected = List.of(new ClientMovie(
+                "Interstellar", "2014", "Nolan", "8.6", "Sci-Fi", ""
+        ));
+        assertEquals(gson.toJson(expected), response);
     }
 
     @Test
