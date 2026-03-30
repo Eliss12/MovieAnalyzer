@@ -1,6 +1,6 @@
-package bg.sofia.uni.project.movie.server.command.service;
+package bg.sofia.uni.project.movie.server.service;
 
-import bg.sofia.uni.project.movie.common.Movie;
+import bg.sofia.uni.project.movie.server.integration.Movie;
 
 import java.util.List;
 

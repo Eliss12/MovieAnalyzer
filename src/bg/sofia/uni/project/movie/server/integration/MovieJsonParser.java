@@ -1,4 +1,4 @@
-package bg.sofia.uni.project.movie.common;
+package bg.sofia.uni.project.movie.server.integration;
 
 import bg.sofia.uni.project.movie.server.logger.LoggerUtil;
 import com.google.gson.Gson;

@@ -1,7 +1,7 @@
-package bg.sofia.uni.project.movie.server.command.service;
+package bg.sofia.uni.project.movie.server.service;
 
-import bg.sofia.uni.project.movie.common.Movie;
-import bg.sofia.uni.project.movie.common.MovieJsonParser;
+import bg.sofia.uni.project.movie.server.integration.Movie;
+import bg.sofia.uni.project.movie.server.integration.MovieJsonParser;
 import bg.sofia.uni.project.movie.exceptions.*;
 import bg.sofia.uni.project.movie.server.cache.CacheService;
 import bg.sofia.uni.project.movie.server.logger.LoggerUtil;

@@ -1,4 +1,4 @@
-package bg.sofia.uni.project.movie.common;
+package bg.sofia.uni.project.movie.server.integration;
 
 import com.google.gson.annotations.SerializedName;
 

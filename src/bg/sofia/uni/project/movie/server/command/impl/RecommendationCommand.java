@@ -1,7 +1,6 @@
 package bg.sofia.uni.project.movie.server.command.impl;
 
-import bg.sofia.uni.project.movie.common.Movie;
-import bg.sofia.uni.project.movie.exceptions.MovieAppException;
+import bg.sofia.uni.project.movie.server.integration.Movie;
 import bg.sofia.uni.project.movie.server.command.Command;
 import bg.sofia.uni.project.movie.server.command.service.MovieService;
 
@@ -24,7 +23,7 @@ public class RecommendationCommand extends Command {
         if (recommendations.isEmpty()) {
             return errorJson("No recommendations found for: " + argument);
         }
-        return toJson(recommendations);
+        return toJson(toClientMovieList(recommendations));
 
     }
 }

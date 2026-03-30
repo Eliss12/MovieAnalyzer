@@ -1,7 +1,6 @@
 package bg.sofia.uni.project.movie.server.command.impl;
 
-import bg.sofia.uni.project.movie.common.Movie;
-import bg.sofia.uni.project.movie.exceptions.MovieAppException;
+import bg.sofia.uni.project.movie.server.integration.Movie;
 import bg.sofia.uni.project.movie.server.command.Command;
 import bg.sofia.uni.project.movie.server.command.service.MovieService;
 
@@ -21,7 +20,7 @@ public class MovieByNameCommand extends Command {
         if (movie == null) {
             return errorJson("Movie not found: " + argument);
         }
-        return toJson(movie);
+        return toJson(toClientMovie(movie));
 
     }
 }
