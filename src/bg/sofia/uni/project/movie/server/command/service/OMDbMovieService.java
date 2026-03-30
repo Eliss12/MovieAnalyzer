@@ -149,8 +149,14 @@ public class OMDbMovieService implements MovieService {
             paths.filter(path -> path.toString().endsWith(".json"))
                     .forEach(path -> {
                         try {
-                            String json = Files.readString(path);
-                            Movie movie = MovieJsonParser.parseMovie(json);
+                            String content = Files.readString(path);
+
+                            // If the first line is a timestamp (all digits), remove it
+                            int newlineIdx = content.indexOf('\n');
+                            if (newlineIdx > 0 && content.substring(0, newlineIdx).matches("\\d+")) {
+                                content = content.substring(newlineIdx + 1);
+                            }
+                            Movie movie = MovieJsonParser.parseMovie(content);
                             // Only add valid movies (not errors)
                             if (!movie.title().contains("error") && !movie.title().contains("Failed")) {
                                 movies.add(movie);

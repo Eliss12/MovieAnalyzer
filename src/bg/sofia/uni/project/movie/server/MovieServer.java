@@ -14,25 +14,26 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
 import java.util.Iterator;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.logging.Level;
 
 public class MovieServer {
     private final ServerConfig config;
     private final CommandProcessor processor;
+    private final CacheService cacheService;
     private final ExecutorService workers;
     private final ConcurrentLinkedQueue<SelectionKey> readyToWrite;
     private volatile boolean running;
+    private final ScheduledExecutorService cacheCleaner;
 
-    public MovieServer(ServerConfig config, CommandProcessor processor) {
+    public MovieServer(ServerConfig config, CommandProcessor processor, CacheService cacheService) {
         this.config = config;
         this.processor = processor;
+        this.cacheService = cacheService;
         this.workers = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         this.readyToWrite = new ConcurrentLinkedQueue<>();
         this.running = true;
+        this.cacheCleaner = Executors.newSingleThreadScheduledExecutor();
     }
 
     static void main() {
@@ -50,7 +51,7 @@ public class MovieServer {
             );
 
             CommandProcessor processor = new CommandProcessor(movieService);
-            MovieServer server = new MovieServer(config, processor);
+            MovieServer server = new MovieServer(config, processor, cache);
 
             server.start();
 
@@ -66,6 +67,17 @@ public class MovieServer {
              Selector selector = Selector.open()) {
 
             setupShutdownHook(selector);
+
+            cacheCleaner.scheduleAtFixedRate(() -> {
+                try {
+                    // You need access to the CacheService instance.
+                    // You can pass it to MovieServer constructor, or get it from somewhere else.
+                    // For simplicity, modify constructor to accept CacheService.
+                    cacheService.cleanExpiredEntries();
+                } catch (Exception e) {
+                    LoggerUtil.log(Level.WARNING, "Failed to clean expired cache entries", e);
+                }
+            }, 1, 1, TimeUnit.DAYS);
 
             serverChannel.configureBlocking(false);
             serverChannel.bind(new InetSocketAddress(config.getPort()));
@@ -236,6 +248,15 @@ public class MovieServer {
 
     private void shutdown() {
         System.out.println("Server stopping...");
+        cacheCleaner.shutdown();
+        try {
+            if (!cacheCleaner.awaitTermination(5, TimeUnit.SECONDS)) {
+                cacheCleaner.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            cacheCleaner.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
 
         workers.shutdown();
         try {
