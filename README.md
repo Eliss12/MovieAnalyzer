@@ -11,7 +11,7 @@ The **Movie Analyzer** is a client‑server application that allows users to sea
 - **Search by Title** – Retrieve detailed information about a movie using its title.
 - **Search by IMDb ID** – Use the IMDb identifier (e.g., `tt0133093` for *The Matrix*) to get movie details.
 - **Genre‑Based Recommendations** – Given a movie title, the server analyzes its genres and returns up to 5 movies from its cache that share the most genres, sorted by similarity and rating.
-- **Persistent Cache** – All successful API responses are saved locally in a `cache` directory, reducing redundant network requests and improving performance.
+- **Persistent Cache** – All successful API responses are saved locally in a `cache` directory, reducing redundant network requests and improving performance. The cache is invalidated every 30 days from its creation.
 - **Non‑Blocking Server** – Uses `java.nio.channels.Selector` to handle many connections with a single thread, and offloads command processing to a thread pool to keep the event loop responsive.
 - **JSON Communication** – All messages between client and server are sent as JSON, making the protocol language‑agnostic and easy to extend.
 - **Poster Display (GUI)** – When a movie has a poster URL, the client automatically opens a small window with the poster image.
