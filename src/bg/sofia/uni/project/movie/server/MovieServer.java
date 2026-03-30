@@ -2,10 +2,10 @@ package bg.sofia.uni.project.movie.server;
 
 import bg.sofia.uni.project.movie.server.cache.CacheService;
 import bg.sofia.uni.project.movie.server.command.*;
-import bg.sofia.uni.project.movie.server.command.service.GenreBasedRecommendationService;
-import bg.sofia.uni.project.movie.server.command.service.MovieService;
-import bg.sofia.uni.project.movie.server.command.service.OMDbMovieService;
-import bg.sofia.uni.project.movie.server.command.service.RecommendationService;
+import bg.sofia.uni.project.movie.server.service.GenreBasedRecommendationService;
+import bg.sofia.uni.project.movie.server.service.MovieService;
+import bg.sofia.uni.project.movie.server.service.OMDbMovieService;
+import bg.sofia.uni.project.movie.server.service.RecommendationService;
 import bg.sofia.uni.project.movie.server.config.ServerConfig;
 import bg.sofia.uni.project.movie.server.logger.LoggerUtil;
 
@@ -70,9 +70,6 @@ public class MovieServer {
 
             cacheCleaner.scheduleAtFixedRate(() -> {
                 try {
-                    // You need access to the CacheService instance.
-                    // You can pass it to MovieServer constructor, or get it from somewhere else.
-                    // For simplicity, modify constructor to accept CacheService.
                     cacheService.cleanExpiredEntries();
                 } catch (Exception e) {
                     LoggerUtil.log(Level.WARNING, "Failed to clean expired cache entries", e);
