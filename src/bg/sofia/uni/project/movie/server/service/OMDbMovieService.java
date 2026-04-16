@@ -18,14 +18,12 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.stream.Stream;
 
 public class OMDbMovieService implements MovieService {
     private static final HttpClient DEFAULT_HTTP_CLIENT = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(10))
-            .executor(Executors.newFixedThreadPool(10))
             .build();
 
     private final CacheService cache;
